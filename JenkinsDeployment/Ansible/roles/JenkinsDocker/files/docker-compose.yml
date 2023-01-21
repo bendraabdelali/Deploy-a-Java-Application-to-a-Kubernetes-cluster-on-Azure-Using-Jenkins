@@ -10,6 +10,9 @@ services:
     volumes:
       - jenkis-home1:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false # skip the initial setup wizard and use the default configuration.
+      - JENKINS_USER=admin
 
 volumes:
     jenkis-home1:

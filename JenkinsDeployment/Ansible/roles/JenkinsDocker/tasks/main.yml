@@ -104,3 +104,8 @@
 - name: Password to "Unlock Jenkins"
   debug:
     var: result.stdout
+
+# - name: adding jenkins to docker groups 
+#   shell: docker exec -u 0 jenkins bash -c "usermod -aG docker jenkins"
+#   changed_when: false
+#   register: result
