@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    container_name: 'jenkins'
+    ports:
+      - 8080:8080 
+      - 50000:50000
+    volumes:
+      - jenkis-home1:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+    jenkis-home1:
+       driver: local
+
+

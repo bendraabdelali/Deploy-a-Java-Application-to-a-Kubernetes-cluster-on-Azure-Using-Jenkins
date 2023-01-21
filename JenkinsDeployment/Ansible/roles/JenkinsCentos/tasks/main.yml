@@ -1,0 +1,102 @@
+
+---
+- name: yum update
+  yum:
+    name: '*'
+    state: latest
+
+- name: Check if Java is already installed
+  command: java -version
+  ignore_errors: true
+  register: java_version
+
+- name: Install Java 11 using YUM.
+  yum:
+    name: "{{java.VERSION}}"
+    state: latest
+  when: java_version.rc != 0  
+  become: true
+
+
+- name: Download Jenkins repo  URL 
+  get_url:
+    url: "{{jenkins.repo_URL}}"
+    dest: /etc/yum.repos.d/jenkins.repo
+  
+  become: true
+  
+
+- name: Import GPG Key
+  rpm_key:
+    state: present
+    key: "{{jenkins.gpg_key}}"
+
+- name: Check if jenkins aleardy installed 
+  command: jenkins --version
+  register: jenkins_version
+  ignore_errors: true
+
+- name: Install Jenkins
+  yum:
+    name: jenkins
+    state: present
+  when: jenkins_version.rc != 0
+  
+ # Jenkins Confiuguration
+
+- name: Change Jenkins JAVA options
+  lineinfile:
+    dest=/etc/sysconfig/jenkins
+    regexp=^JENKINS_JAVA_OPTIONS=
+    line=JENKINS_JAVA_OPTIONS="{{ jenkins.JAVA_OPTIONS }}"
+  become: true
+
+- name: set JENKINS_PORT
+  lineinfile:
+    path: /etc/sysconfig/jenkins
+    regexp: "^JENKINS_PORT="
+    line: 'JENKINS_PORT="{{jenkins_port}}"'
+  when: jenkins_port is defined
+  register: result_jenkins_port
+
+
+- name: Change Jenkins JAVA options
+  lineinfile: 
+    dest=/etc/sysconfig/jenkins
+    regexp=^JENKINS_JAVA_OPTIONS=
+    line=JENKINS_JAVA_OPTIONS="{{ jenkins.JAVA_OPTIONS }}"
+  become: true
+
+- name: set JENKINS_LISTEN_ADDRESS
+  lineinfile:
+    path: /etc/sysconfig/jenkins
+    regexp: "^JENKINS_LISTEN_ADDRESS="
+    line: 'JENKINS_LISTEN_ADDRESS="{{jenkins_listen_address}}"'
+  when: jenkins_listen_address is defined
+  register: result_jenkins_listen_address
+
+#open port 8080 in the firewall
+- name: Open port {{jenkins_port}}
+  command: firewall-cmd --zone=public --add-port="{{jenkins_port}}"/tcp --permanent
+  become: true
+
+#reload the firewall
+- name: Reload firewall
+  command: firewall-cmd --reload
+  become: true
+  
+# start Jenkins 
+- name: Start Jenkins service and enable on boot
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+# get Jenkins Password 
+- name: Get Jenkins password
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: Password to "Unlock Jenkins"
+  debug:
+    var: result.stdout

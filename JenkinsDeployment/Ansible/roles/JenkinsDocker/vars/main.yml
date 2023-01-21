@@ -1,0 +1,4 @@
+---
+# user to add to Docker group
+system_user: azureuser
+dir_dest : "/home/azureuser/"

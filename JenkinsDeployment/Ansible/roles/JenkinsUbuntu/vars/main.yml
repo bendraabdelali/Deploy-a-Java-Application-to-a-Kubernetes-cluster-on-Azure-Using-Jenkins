@@ -1,0 +1,5 @@
+---
+# vars file for JenkinsUbuntu
+jenkins_repo:  https://pkg.jenkins.io/debian-stable/jenkins.io.key
+jenkins_port: 8080
+java_version:  default-jdk

@@ -1,0 +1,63 @@
+---
+- name: Update apt-get repo and cache
+  apt:
+     update_cache: yes
+     force_apt_get: yes
+     cache_valid_time: 3600
+
+- name: Jenkins repository
+  apt_key:
+    url: "{{jenkins_repo}}"
+    state: present
+  become: true
+
+- name: Adding jenkins to source list
+  apt_repository:
+    repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+    state: present
+  become: true
+
+- name: Install Java
+  apt:
+      name: "{{java_version}}"
+      state: present
+      update_cache: yes
+
+# allowing Port 8080
+- name: Enable firewall
+  command: ufw enable
+  become: True
+
+- name: Open port 8080
+  command: ufw allow 8080/tcp
+  become: True
+
+- name: ensure jenkins is installed
+  apt:
+    name: jenkins
+    update_cache: yes
+  become: true
+
+- name: ensure jenkins is running
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: Get Jenkins password
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: Password to "Unlock Jenkins"
+  debug:
+    var: result.stdout
+
+
+- name: Install additional Python packages
+  pip: name={{ item }} state=latest
+  with_items:
+    - ansible
+    - boto
+    - flake8
+    - passlib
