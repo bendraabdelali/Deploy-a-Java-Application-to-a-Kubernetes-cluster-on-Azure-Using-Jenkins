@@ -10,7 +10,7 @@ pipeline {
                 script {
                     echo 'incrementing app version...'
                     
-                    sh 'ls '
+                    
                     sh 'mvn build-helper:parse-version versions:set \
                         -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                         versions:commit -f Java-Maven-App/pom.xml'
@@ -26,6 +26,8 @@ pipeline {
                 script {
                     echo "building the application..."
                     sh 'mvn clean package -f Java-Maven-App/pom.xml'
+                    sh 'ls '
+                    sh 'ls Java-Maven-App'
                 }
             }
         }
@@ -35,7 +37,7 @@ pipeline {
                 script {
                     echo "building the docker image..."
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/Dockerfile"
+                        sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
                         sh "echo $PASS | docker login -u $USER --password-stdin"
                         sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
                     }
