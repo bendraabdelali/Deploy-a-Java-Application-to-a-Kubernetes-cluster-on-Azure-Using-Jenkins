@@ -10,6 +10,7 @@ pipeline {
                 script {
                     echo 'incrementing app version...'
                     sh 'cd Java-Maven-App '
+                    sh 'ls '
                     sh 'mvn build-helper:parse-version versions:set \
                         -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                         versions:commit'
