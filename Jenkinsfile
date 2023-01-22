@@ -69,7 +69,7 @@ pipeline {
                     }
                 }
             }
-        # make sure to add ignore plugin to jenkins to overide jenkins commit trriger the pipeline 
+        // # make sure to add ignore plugin to jenkins to overide jenkins commit trriger the pipeline 
         stage('commit version update') {
             steps {
                 script {
