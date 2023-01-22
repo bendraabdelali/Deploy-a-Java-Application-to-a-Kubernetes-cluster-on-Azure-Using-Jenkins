@@ -33,7 +33,7 @@
   apt:
     pkg:
       - docker-ce
-      - docker-compose
+      # - docker-compose
 
     update_cache: yes
     install_recommends: yes

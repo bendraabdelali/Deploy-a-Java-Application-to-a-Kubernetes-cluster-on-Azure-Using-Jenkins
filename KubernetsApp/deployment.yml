@@ -14,11 +14,9 @@ spec:
       labels:
         app: $APP_NAME
     spec:
-      imagePullSecrets:
-        - name: aws-registry-key
       containers:
         - name: $APP_NAME
-          image: $DOCKER_REPO:$IMAGE_NAME
+          image: $DOCKER_REPO:$IMAGE_TAG
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

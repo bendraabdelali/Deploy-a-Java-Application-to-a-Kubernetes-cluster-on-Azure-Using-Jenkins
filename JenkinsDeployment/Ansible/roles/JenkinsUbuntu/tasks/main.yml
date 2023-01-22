@@ -57,7 +57,7 @@
     var: result.stdout
   when: jenkins_version.rc != 0  
 
-- name: Check if kubect  is already installed
+- name: Check if kubectl  is already installed
   command:   kubectl version
   ignore_errors: true
   register: kubectl_version
@@ -76,10 +76,7 @@
   ansible.builtin.include_tasks:
     file: "./roles/JenkinsUbuntu/tasks/DockerTasks.yml"
 
-- name: copy kube Config File
-  copy:
-    src: C:\\Users\\abdelali\\.kube\\config
-    dest: "{{dir_dest}}"
+
 
 
 
