@@ -54,7 +54,7 @@ pipeline {
         
         stage('deploy') {
                 environment {
-                    APP_NAME = 'maven-app'
+                    APP_NAME = 'myapp'
                     DOCKER_REPO='abdbndr/maven-app'
                 }
                 steps {
