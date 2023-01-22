@@ -32,18 +32,26 @@ pipeline {
             }
         }
 
-        stage('build image') {
+        stage('test & build image') {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                    // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        
+                    //     sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
+                    //     sh "echo $PASS | docker login -u $USER --password-stdin"
+                    //     sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
+                    // }
+
+                     withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                       sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
                         sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
+        
                     }
                 }
             }
         }
+        
         stage('deploy') {
                 // environment {
                 //     AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')

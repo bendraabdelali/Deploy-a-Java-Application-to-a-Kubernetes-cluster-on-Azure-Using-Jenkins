@@ -17,47 +17,69 @@
     state: present
   become: true
 
+- name: Check if Java is already installed
+  command: java -version
+  ignore_errors: true
+  register: java_version
+
 - name: Install Java
   apt:
-      name: "{{java_version}}"
-      state: present
-      update_cache: yes
+    name: "{{java_version}}"
+    state: present
+    update_cache: yes
 
-# allowing Port 8080
-- name: Enable firewall
-  command: ufw enable
-  become: True
-
-- name: Open port 8080
-  command: ufw allow 8080/tcp
-  become: True
+- name: Check if jenkins is already installed
+  command:  jenkins --version
+  ignore_errors: true
+  register: jenkins_version
 
 - name: ensure jenkins is installed
   apt:
     name: jenkins
     update_cache: yes
+  when: jenkins_version.rc != 0  
   become: true
 
 - name: ensure jenkins is running
   service:
     name: jenkins
-    state: started
+    state: started 
     enabled: yes
 
 - name: Get Jenkins password
   shell: cat /var/lib/jenkins/secrets/initialAdminPassword
   changed_when: false
   register: result
+  when: jenkins_version.rc != 0  
 
 - name: Password to "Unlock Jenkins"
   debug:
     var: result.stdout
+  when: jenkins_version.rc != 0  
+
+- name: Check if kubect  is already installed
+  command:   kubectl version
+  ignore_errors: true
+  register: kubectl_version
+
+- name: Install kubectl
+  ansible.builtin.get_url:
+    url: "{{ kubectl_url }}"
+    dest: /usr/bin/kubectl
+    mode: "755"
+    validate_certs: "{{ kubectl_validate_certs }}"
+  when : kubectl_version.rc != 0
 
 
-- name: Install additional Python packages
-  pip: name={{ item }} state=latest
-  with_items:
-    - ansible
-    - boto
-    - flake8
-    - passlib
+
+- name: Include   Docker tasks
+  ansible.builtin.include_tasks:
+    file: "./roles/JenkinsUbuntu/tasks/DockerTasks.yml"
+
+- name: copy kube Config File
+  copy:
+    src: C:\\Users\\abdelali\\.kube\\config
+    dest: "{{dir_dest}}"
+
+
+

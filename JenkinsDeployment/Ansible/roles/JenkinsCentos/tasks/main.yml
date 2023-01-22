@@ -100,3 +100,20 @@
 - name: Password to "Unlock Jenkins"
   debug:
     var: result.stdout
+
+- name: Install kubectl
+  become: True
+  package:
+    name: kubectl
+    state: latest
+
+- name: copy kube Config File
+  copy:
+    src: C:\\Users\\abdelali\\.kube\\config
+    dest: "{{dir_dest}}"
+# - name: Install kubectl
+#   become: True
+#   command: |
+#     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -L -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+#     && chmod +x kubectl
+#     && sudo mv kubectl /usr/local/bin/kubectl

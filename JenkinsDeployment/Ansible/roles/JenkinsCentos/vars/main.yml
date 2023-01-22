@@ -2,7 +2,7 @@ jenkins_version: 2.263
 jenkins_port: 8080
 jenkins_listen_address: "0.0.0.0"
 jenkins_args: ""
-
+dir_dest : "/home/azureuser/"
 
 
 
