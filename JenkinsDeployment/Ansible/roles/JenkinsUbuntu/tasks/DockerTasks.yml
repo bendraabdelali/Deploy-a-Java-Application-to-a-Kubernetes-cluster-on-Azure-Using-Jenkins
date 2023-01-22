@@ -1,0 +1,56 @@
+
+- name: Install packages necessary for APT to use a repository over HTTPS
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    update_cache: yes
+    install_recommends: no
+    state: present
+  become: true
+  
+- name: Add official Docker GPG key (Ubuntu)
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    state: present
+  when: ansible_distribution == 'Ubuntu'
+
+
+
+- name: Add official Docker APT repository (Ubuntu)
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: 'docker-official'
+    update_cache: yes
+  when: ansible_distribution == 'Ubuntu'
+
+
+
+- name: Install docker-ce and docker-compose
+  apt:
+    pkg:
+      - docker-ce
+      - docker-compose
+
+    update_cache: yes
+    install_recommends: yes
+    state: present
+
+- name: Add users to the Docker group
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop:
+  - "{{ system_user }}"
+  - jenkins
+
+
+- name: avoid probelem off docker login fails on a server with no X11 installed
+  command:   dpkg -r --ignore-depends=golang-docker-credential-helpers golang-docker-credential-helpers
+  ignore_errors: true
+  become: True
+ 

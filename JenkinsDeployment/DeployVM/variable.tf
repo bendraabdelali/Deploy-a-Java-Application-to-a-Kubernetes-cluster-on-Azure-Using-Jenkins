@@ -3,6 +3,12 @@ variable "resource_group" {
   default = "MyResource"
 }
 
+variable "location" {
+  type = string
+  default = "eastus2"
+  
+}
+
 variable "virtual_network" {
   type        = string
   default     = "MyVirtualNetwork"

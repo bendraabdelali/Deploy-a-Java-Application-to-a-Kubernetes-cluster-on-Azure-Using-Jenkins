@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('test & build image') {
+        stage('test, build, and Push image ') {
             steps {
                 script {
                     echo "building the docker image..."
@@ -88,4 +88,3 @@ pipeline {
 }
 
 
-// sudo dpkg -r --ignore-depends=golang-docker-credential-helpers golang-docker-credential-helpers
