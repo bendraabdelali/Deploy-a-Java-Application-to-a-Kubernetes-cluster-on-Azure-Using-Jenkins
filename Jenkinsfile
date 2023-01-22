@@ -43,7 +43,7 @@ pipeline {
                     //     sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
                     // }
 
-                     withDockerRegistry([ credentialsId: "dockerhub", url: "" ]) {
+                     withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
                        sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
                         sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
         
