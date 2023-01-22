@@ -74,7 +74,7 @@ pipeline {
                         sh 'git config --global user.email "jenkins@jenkins.com"'
                         sh 'git config --global user.name "jenkins"'
 
-                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/bendraabdelali/Deploy-a-Maven-application-to-a-Kubernetes-cluster-on-Azure-Using-Jenkins"
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/bendraabdelali/Deploy-a-Java-Application-to-a-Kubernetes-cluster-on-Azure-Using-Jenkins"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
                         sh 'git push origin HEAD:main'
