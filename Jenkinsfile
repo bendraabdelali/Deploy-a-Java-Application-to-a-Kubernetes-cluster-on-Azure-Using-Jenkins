@@ -57,37 +57,36 @@ pipeline {
         }
         
         stage('deploy') {
-                // environment {
-                //     AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-                //     AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
-                //     APP_NAME = 'java-maven-app'
-                // }
+                environment {
+                    APP_NAME = 'maven-app'
+                    DOCKER_REPO='abdbndr/maven-app'
+                }
                 steps {
                     script {
                         echo 'deploying docker image...'
-                        // sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
-                        // sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
+                        sh 'envsubst < kubernetes/deployment.yml | kubectl apply -f -'
+                        sh 'envsubst < kubernetes/service.yml | kubectl apply -f -'
                     }
                 }
             }
-        // # make sure to add ignore plugin to jenkins to overide jenkins commit trriger the pipeline 
-        // stage('commit version update') {
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: 'gitlab-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+        # make sure to add ignore plugin to jenkins to overide jenkins commit trriger the pipeline 
+        stage('commit version update') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                        
-        //                 // git config here for the first time run
-        //                 sh 'git config --global user.email "jenkins@example.com"'
-        //                 sh 'git config --global user.name "jenkins"'
+                        // git config here for the first time run
+                        sh 'git config --global user.email "jenkins@jenkins.com"'
+                        sh 'git config --global user.name "jenkins"'
 
-        //                 sh "git remote set-url origin https://${USER}:${PASS}@github.com/bendraabdelali/Deploy-a-Maven-application-to-a-Kubernetes-cluster-on-Azure-Using-Jenkins"
-        //                 sh 'git add .'
-        //                 sh 'git commit -m "ci: version bump"'
-        //                 sh 'git push origin HEAD:jenkins-jobs'
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/bendraabdelali/Deploy-a-Maven-application-to-a-Kubernetes-cluster-on-Azure-Using-Jenkins"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:main'
 
-        //             }
-        //         }
-        //     }
-        // }
+                    }
+                }
+            }
+        }
     }
 }
