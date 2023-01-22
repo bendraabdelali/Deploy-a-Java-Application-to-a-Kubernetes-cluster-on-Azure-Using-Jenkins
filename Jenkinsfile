@@ -36,13 +36,17 @@ pipeline {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                    // withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
                         
-                        sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
-                    }
+                    //     sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
+                    //     sh "echo $PASS | docker login -u $USER --password-stdin"
+                    //     sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
+                    // }
+                    withDockerRegistry([credentialsId: 'docker-hub', url: '']) {
 
+	                    docker.build('abdbndr/maven-app:${IMAGE_NAME}', '-f Dockerfile ./Java-Maven-App/').push('latest')
+
+	                }
                     //  withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
                     //    sh "docker build  -t abdbndr/maven-app:${IMAGE_NAME} ./Java-Maven-App/"
                     //     sh "docker push abdbndr/maven-app:${IMAGE_NAME}"
