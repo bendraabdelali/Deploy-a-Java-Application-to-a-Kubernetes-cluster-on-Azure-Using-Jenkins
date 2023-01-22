@@ -6,7 +6,7 @@ spec:
   selector:
     app: $APP_NAME
   ports:
-  - name: TCP
+  - name: myapp
     port: 80
     targetPort: 8080
   type: LoadBalancer
