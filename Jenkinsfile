@@ -10,7 +10,6 @@ pipeline {
                 script {
                     echo 'incrementing app version...'
                     
-                    
                     sh 'mvn build-helper:parse-version versions:set \
                         -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
                         versions:commit -f Java-Maven-App/pom.xml'
@@ -21,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('build app') {
+        stage('test, build app') {
             steps {
                 script {
                     echo "building the application..."
@@ -32,7 +31,7 @@ pipeline {
             }
         }
 
-        stage('test, build, and Push image ') {
+        stage('build, and Push image ') {
             steps {
                 script {
                     echo "building the docker image..."
