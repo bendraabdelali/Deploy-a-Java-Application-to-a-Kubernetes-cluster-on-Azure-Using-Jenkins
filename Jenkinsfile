@@ -20,11 +20,8 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
-        stage('test and build app') {
-=======
         stage('test, build app') {
->>>>>>> 97293cdfc671f44b7a30518b13079e2760405816
+            
             steps {
                 script {
                     echo "building the application..."
@@ -33,11 +30,8 @@ pipeline {
             }
         }
 
-<<<<<<< HEAD
-        stage('build and Push image ') {
-=======
         stage('build, and Push image ') {
->>>>>>> 97293cdfc671f44b7a30518b13079e2760405816
+            
             steps {
                 script {
                     echo "building the docker image..."
